@@ -17,7 +17,7 @@ This notebook explores time-varying volatility and downside risk of gold prices 
 - Python: pandas, numpy, matplotlib, yfinance
 - Techniques: Quantile estimation, rolling windows
 
-## Next Steps
-- Compare Gold vs S&P 500 VaR.
-- Add GARCH or Parametric VaR.
-- Integrate into a portfolio-risk dashboard.
+### Results Summary
+- 1-day 95% VaR ≈ -1.6%
+- 1-day 99% VaR ≈ -2.6%
+- Rolling volatility peaked during 2020–2021, aligning with global market stress.
