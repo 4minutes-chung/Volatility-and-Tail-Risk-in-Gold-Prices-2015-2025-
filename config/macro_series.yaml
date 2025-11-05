@@ -1,0 +1,194 @@
+# Macro data sources used for extending the gold risk analysis project.
+# YAML ("YAML Ain't Markup Language") is a plain-text format for structured
+# configuration. Indentation shows nesting: each item under the top-level
+# ``series`` list defines one download target for scripts/download_macro_data.py.
+# The keys in each block map directly to the SeriesConfig dataclass fields in
+# scripts/download_macro_data.py, which builds the appropriate API request and
+# transformation pipeline.
+
+series:
+  - id: canada_real_gdp_per_capita
+    description: Monthly real GDP per capita (chained 2017 dollars)
+    source: statscan
+    table: 36-10-0434-02
+    value_column: value
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1992-01-01
+    geography: Canada
+    extra_dimensions:
+      Prices: Chained (2017) dollars
+      Seasonal adjustment: Seasonally adjusted at annual rates
+      North American Industry Classification System (NAICS): All industries
+    transformation: log_per_capita
+    population_table: 17-10-0009-01
+
+  - id: canada_unemployment_rate
+    description: Monthly unemployment rate (%)
+    source: statscan
+    table: 14-10-0287-01
+    value_column: Unemployment rate
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1976-01-01
+    geography: Canada
+    extra_dimensions:
+      Labour force characteristics: Unemployment rate
+      Sex: Both sexes
+      Age group: 15 years and over
+    transformation: level
+
+  - id: canada_real_hourly_wage
+    description: Average hourly earnings deflated by CPI
+    source: statscan
+    table: 14-10-0064-01
+    value_column: value
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1997-01-01
+    geography: Canada
+    extra_dimensions:
+      Data type: Average hourly wages including overtime
+      Statistics: Estimate
+      Sex: Both sexes
+      Age group: 15 years and over
+      North American Industry Classification System (NAICS): All industries
+    transformation: log_real
+    cpi_table: 18-10-0004-01
+
+  - id: canada_retail_volume_index
+    description: Retail trade sales volume index (proxy for consumption)
+    source: statscan
+    table: 20-10-0008-01
+    value_column: value
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1991-01-01
+    geography: Canada
+    extra_dimensions:
+      Statistics: Index
+      North American Industry Classification System (NAICS): Retail trade [44-45]
+      Prices: Chained (2012) dollars
+      Seasonally adjusted: Seasonally adjusted
+    transformation: log
+
+  - id: canada_cpi_inflation
+    description: Consumer Price Index inflation (monthly log difference)
+    source: statscan
+    table: 18-10-0004-01
+    value_column: value
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1981-01-01
+    geography: Canada
+    extra_dimensions:
+      Products and product groups: All-items
+      Geography: Canada
+      Seasonal adjustment: Seasonally adjusted
+    transformation: log_diff
+
+  - id: boc_overnight_rate
+    description: Bank of Canada target overnight rate (monthly average)
+    source: boc
+    series: V39079
+    frequency: M
+    start_date: 1990-01-01
+    aggregation: mean
+
+  - id: cad_usd_exchange_rate
+    description: CAD/USD exchange rate (monthly average)
+    source: boc
+    series: FXUSDCAD
+    frequency: M
+    start_date: 1970-01-01
+    aggregation: mean
+
+  - id: wti_crude_oil_price
+    description: West Texas Intermediate crude oil spot price
+    source: fred
+    series: DCOILWTICO
+    frequency: M
+    start_date: 1986-01-01
+    transformation: log
+
+  - id: us_industrial_production
+    description: U.S. industrial production index
+    source: fred
+    series: INDPRO
+    frequency: M
+    start_date: 1980-01-01
+    transformation: log_diff
+
+  - id: canada_industrial_production
+    description: Canadian industrial production index
+    source: statscan
+    table: 16-10-0019-01
+    value_column: value
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1992-01-01
+    geography: Canada
+    extra_dimensions:
+      Industrial Aggregate: Total industrial production
+      Prices: Volume index (2017=100)
+      Seasonal adjustment: Seasonally adjusted
+    transformation: log_diff
+
+  - id: canada_house_price_index
+    description: Teranet-National Bank house price index (national)
+    source: external
+    url: https://housepriceindex.ca/wp-content/uploads/2023/07/National_HPI_SA.xlsx
+    sheet_name: National_Composite_SA
+    frequency: M
+    start_date: 1999-01-01
+    transformation: log
+
+  - id: canada_housing_starts
+    description: Housing starts (seasonally adjusted annual rate)
+    source: fred
+    series: CANHOUSTARTM
+    frequency: M
+    start_date: 1948-01-01
+    transformation: log
+
+  - id: boc_non_energy_commodity_index
+    description: Bank of Canada non-energy commodity price index
+    source: boc
+    series: V62265192
+    frequency: M
+    start_date: 1980-01-01
+    transformation: log
+
+  - id: canada_exports_to_us
+    description: Real exports to the United States (deflated)
+    source: statscan
+    table: 12-10-0011-01
+    value_column: value
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1988-01-01
+    geography: United States
+    extra_dimensions:
+      Prices: Current dollars
+      North American Product Classification System (NAPCS) Canada 2017 Version 2.0: Total exports
+      Seasonal adjustment: Seasonally adjusted
+    transformation: real_log
+    price_index_table: 18-10-0029-01
+    price_index_item: Export Price Index, total exports
+
+  - id: canada_imports_from_us
+    description: Real imports from the United States (deflated)
+    source: statscan
+    table: 12-10-0011-01
+    value_column: value
+    date_column: REF_DATE
+    frequency: M
+    start_date: 1988-01-01
+    geography: United States
+    extra_dimensions:
+      Prices: Current dollars
+      North American Product Classification System (NAPCS) Canada 2017 Version 2.0: Total imports
+      Seasonal adjustment: Seasonally adjusted
+    transformation: real_log
+    price_index_table: 18-10-0029-01
+    price_index_item: Import Price Index, total imports
